@@ -235,7 +235,7 @@ function MaxLine() {
 	ctx = c.getContext('2d');
 	c.width = width;
 	c.height = height;
-	loadMaxpat('GL_Attack3Joy.maxpat');
+	loadMaxpat(maxpat_file);
 });
 
 
