@@ -153,6 +153,7 @@ MaxBox.prototype = new MaxObject();
 function MaxBox() {
 	this.inlets = [];
 	this.outlets = [];
+	this.drawInOutlets = true;
 	this.init = function() {
 		this.buildInlets();
 		this.buildOutlets();
@@ -190,17 +191,14 @@ function MaxBox() {
 			ctx.fillText(this.attrs['maxclass'], 5, 15);
 		}
 
-		// Draw the box outline
-		ctx.strokeStyle = '#cbd5b8';
-		ctx.lineWidth = 2.5;
-		roundRect(ctx, 0, 0, coords[2], coords[3], 6);
-
-		// Draw the inlets and outlets
-		for (var k = 0; k < this.inlets.length; k++) {
-			this.inlets[k].drawRelative();
-		}
-		for (var k = 0; k < this.outlets.length; k++) {
-			this.outlets[k].drawRelative();
+		if (this.drawInOutlets) {
+			// Draw the inlets and outlets
+			for (var k = 0; k < this.inlets.length; k++) {
+				this.inlets[k].drawRelative();
+			}
+			for (var k = 0; k < this.outlets.length; k++) {
+				this.outlets[k].drawRelative();
+			}
 		}
 	}
 	this.x = function() {
