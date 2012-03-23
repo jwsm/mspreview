@@ -179,16 +179,39 @@ function MaxBox() {
 		coords = this.attrs["patching_rect"];
 		ctx.translate(coords[0], coords[1]);
 
-		// Draw Text
-		if(this.attrs['fontname'] && this.attrs['fontsize']) {
-			ctx.font = (this.attrs['fontsize'] * fontScaleFactor) + 'pt ' + this.attrs['fontname'];
-		} else {
-			ctx.font = "10pt Courier";
-		}
-		if(this.attrs['text']){
-			ctx.fillText(this.attrs['text'], 5, 15);
-		} else {
-			ctx.fillText(this.attrs['maxclass'], 5, 15);
+		//var found = false;
+		var result = drawSpecialComponent(this);
+		if (!result.done) {
+			if (result.needsText !== false) {
+				ctx.fillStyle = 'black';
+				// Draw Text
+				var lineHeight = 12;
+				if(this.attrs['fontname'] && this.attrs['fontsize']) {
+					ctx.font = (this.attrs['fontsize'] * fontScaleFactor) + 'pt '
+						+ this.attrs['fontname'];
+					lineHeight = this.attrs['fontsize'];
+				} else {
+					ctx.font = "10pt Courier";
+				}
+				if(typeof this.attrs['text'] != 'undefined'){
+					if (this.attrs['textcolor']){
+						console.log('changing text color to ' + hexify(this.attrs['textcolor']));
+						ctx.fillColor = hexify(this.attrs['textcolor']);
+					}
+					lines = getLines(ctx, this.attrs['text'], (this.width()), ctx.font);
+					for (var l = 0; l < lines.length; l++) {
+						ctx.fillText(lines[l], 2, (lineHeight * (l + 1)) + 1 );
+					}
+				} else {
+					ctx.fillText(this.attrs['maxclass'], 5, 15);
+				}
+			}
+			if (result.needsBox !== false) {
+				// Draw the box outline
+				ctx.strokeStyle = '#cbd5b8';
+				ctx.lineWidth = 2.5;
+				roundRect(ctx, 0, 0, coords[2], coords[3], 6);
+			}
 		}
 
 		if (this.drawInOutlets) {
