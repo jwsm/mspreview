@@ -6,6 +6,9 @@ var canvasScaleFactor = 1.0;
 var fontScaleFactor = 0.75;
 var patcher = new MaxPatcher();
 
+var maxWidth = 100;
+var maxHeight = 100;
+
 function loadMaxpat(filename) {
     var xobj = new XMLHttpRequest();
     xobj.overrideMimeType("application/json");
@@ -14,6 +17,8 @@ function loadMaxpat(filename) {
         if (xobj.readyState == 4) {
             var jsonData = xobj.responseText;
             processMaxpatData(jsonData);
+			c.width = width = (maxWidth + 20) * canvasScaleFactor;
+			c.height = height = (maxHeight + 20) * canvasScaleFactor;
 			ctx.scale(canvasScaleFactor,canvasScaleFactor);
 			patcher.draw();
         }
@@ -36,8 +41,8 @@ function processMaxpatData(maxpatdata) {
 	$.each(data.patcher, function(key, value) {
 		switch(key) {
 			case 'rect':
-				c.width = width = value[2];
-				c.height = height = value[3];
+				// c.width = width = value[2];
+				// c.height = height = value[3];
 				break;
 			case 'boxes':
 				break;
@@ -151,6 +156,23 @@ function MaxBox() {
 	this.init = function() {
 		this.buildInlets();
 		this.buildOutlets();
+		if ((this.x() + this.width()) > maxWidth) {
+			maxWidth = (this.x() + this.width());
+			console.log('set new max width of ' + maxWidth);
+		}
+		if ((this.y() + this.height()) > maxHeight) {
+			maxHeight = (this.y() + this.height());
+			console.log('set new max height of ' + maxHeight);
+		}
+
+		//
+		if (		this.maxclass() == 'comment'
+				|| 	this.maxclass() == 'message'
+				|| 	this.maxclass() == 'led'
+				||	this.maxclass() == 'multislider'
+				||	this.maxclass() == 'textedit') {
+			this.drawInOutlets = false;
+		}
 	}
 	this.customDraw = function() {
 		coords = this.attrs["patching_rect"];
