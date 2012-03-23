@@ -122,7 +122,7 @@ function InOutlet() {
 	// 	ctx.fillRect(this.abs_x()-3.5, this.abs_y()-2, 7, 3);
 	// }
 	this.drawRelative = function() {
-		ctx.fillStyle = 'black';
+		ctx.fillStyle = '#737373';
 		ctx.fillRect(this.x-3.5, this.y-2, 7, 3);
 	}
 	this.abs_x = function() {
