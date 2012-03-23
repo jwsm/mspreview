@@ -224,6 +224,9 @@ function MaxBox() {
 			}
 		}
 	}
+	this.maxclass = function() {
+		return this.attrs['maxclass'];
+	}
 	this.x = function() {
 		return this.attrs['patching_rect'][0];
 	}
