@@ -1,7 +1,7 @@
 var c;
 var ctx;
-var width = 600;
-var height = 600;
+var width = 100;
+var height = 100;
 var canvasScaleFactor = 1.0;
 var fontScaleFactor = 0.75;
 var patcher = new MaxPatcher();
@@ -35,6 +35,10 @@ function processMaxpatData(maxpatdata) {
 	var data = jQuery.parseJSON(maxpatdata);
 	$.each(data.patcher, function(key, value) {
 		switch(key) {
+			case 'rect':
+				c.width = width = value[2];
+				c.height = height = value[3];
+				break;
 			case 'boxes':
 				break;
 			default:
