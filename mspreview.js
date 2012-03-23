@@ -273,9 +273,17 @@ function MaxLine() {
 
 		ctx.lineWidth = 1.2;
 		ctx.beginPath();
+		// move line to starting point (outlet of source object)
 		ctx.moveTo(start_outlet.abs_x(), start_outlet.abs_y());
+		mp = this.attrs['midpoints'];
+		// draw line to each of midpoints before end point
+		for (var m = 0; m < mp.length; m+=2) {
+			//TODO: implement quadratic curves in lines...
+			//ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+			ctx.lineTo(mp[m], mp[m+1]);
+		}
+		// draw line to endpoint (inlet of destination object)
 		ctx.lineTo(end_inlet.abs_x(), end_inlet.abs_y());
-		ctx.closePath();
 		ctx.stroke();
 	}
 }
