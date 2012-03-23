@@ -337,3 +337,213 @@ function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
     ctx.fill();
   }
 }
+
+function drawSpecialComponent(c) {
+	maxclass = c.maxclass();
+	switch(maxclass) {
+		// Toggle
+		case 'toggle':
+			ctx.strokeStyle = 'black';
+			roundRect(ctx, 0, 0, c.width(), c.height(), 3, false, true);
+			//ctx.strokeRect(0, 0, c.width(), c.height());
+			// Don't necessarily want the X
+			// ctx.lineWidth = 1;
+			// ctx.beginPath();
+			// ctx.moveTo(0, 0);
+			// ctx.lineTo(c.width(), c.height());
+			// ctx.moveTo(c.width(), 0);
+			// ctx.lineTo(0, c.height());
+			// ctx.closePath();
+			// ctx.stroke();
+			// what is still needed
+			return {done: true};
+		// Button
+		case 'button':
+			ctx.fillStyle = '#eeeeee';
+			roundRect(ctx, 0, 0, c.width(), c.height(), 5, true, false);
+			ctx.fillStyle = '#b7b7b7';
+			ellipse((c.width()/2), (c.height()/2), c.width()*0.4);
+			ctx.fillStyle = 'white';
+			ellipse((c.width()/2), (c.height()/2), c.width()*0.3);
+			return {done: true};
+		case 'led':
+			// ctx.fillStyle = '#eeeeee';
+			// roundRect(ctx, 0, 0, c.width(), c.height(), 5, true, false);
+			ctx.fillStyle = 'black';
+			ellipse((c.width()/2), (c.height()/2), c.width()*0.4);
+			ctx.fillStyle = hexify(c.attrs['offcolor']);
+			ellipse((c.width()/2), (c.height()/2), c.width()*0.3);
+			return {done: true};
+		case 'comment':
+			// ctx.strokeStyle = 'lightgray';
+			// ctx.lineWidth = 0.5;
+			// ctx.strokeRect(0, 0, c.width(), c.height());
+			return {done: false, needsBox: false, needsText: true};
+		case 'panel':
+			if (c.attrs['grad1']) {
+				ctx.strokeStyle = hexify(c.attrs['grad1']);
+			} else if (c.attrs['color']) {
+				ctx.strokeStyle = hex(c.attrs['color']);
+			}
+			ctx.strokeRect(0, 0, c.width(), c.height());
+			return {done: true};
+		case 'matrixctrl':
+			ctx.fillStyle = 'lightgray';
+			ctx.strokeStyle = 'black';
+			ctx.lineWidth = 0.5;
+			ctx.fillRect(0, 0, c.width(), c.height());
+			ctx.strokeRect(0, 0, c.width(), c.height());
+			ctx.lineWidth = 1;
+			ctx.beginPath();
+			for (var i = 0; i < 8; i++) {
+				var h = (i * (c.width()/8))+(c.width()/16);
+				ctx.moveTo(h, 0);
+				ctx.lineTo(h, c.height());
+			}
+			for (var j = 0; j < 5; j++) {
+				var v = (j * (c.height()/5) + (c.height()/10));
+				ctx.moveTo(0, v);
+				ctx.lineTo(c.width(), v);
+			}
+			//ctx.closePath();
+			ctx.stroke();
+			return {done: true};
+		case 'dial':
+			ctx.fillStyle = 'lightgray';
+			roundRect(ctx, 0, 0, c.width(), c.height(), 5, true, false);
+			ctx.fillStyle = 'white';
+			ellipse((c.width()/2), (c.height()/2), c.width()*0.45);
+			ctx.fillStyle = 'gray';
+			ellipse((c.width()/2), (c.height()/2), 4);
+			ctx.lineWidth = 3;
+			ctx.strokeStyle = 'gray';
+			ctx.beginPath();
+			ctx.moveTo(c.width()/2, c.height()/2);
+			ctx.lineTo((c.width()*0.15), (c.height()*0.8));
+			//ctx.closePath();
+			ctx.stroke();
+			return {done: true};
+		case 'number':
+		case 'flonum':
+			ctx.strokeStyle = 'gray';
+			ctx.lineWidth = 1.5;
+			roundRect(ctx, 0, 0, c.width(), c.height(), 5, false, true);
+			ctx.fillStyle = 'lightgray';
+			ctx.beginPath();
+			ctx.moveTo(4, 4);
+			ctx.lineTo(4, c.height()-4);
+			ctx.lineTo(10, c.height()/2);
+			ctx.closePath();
+			ctx.fill();
+			ctx.fillStyle = 'black';
+			ctx.font = "12pt Arial";
+			if (c.maxclass() == 'flonum') {
+				ctx.fillText('0.', 15, 15);
+			} else {
+				ctx.fillText('0', 15, 15);
+			}
+			return {done: true};
+		case 'message':
+			ctx.fillStyle = 'lightgray';
+			roundRect(ctx, 0, 0, c.width(), c.height(), 8, true, false);
+			return {done: false, needsBox: false, needsText: true};
+		case 'inlet':
+			ctx.fillStyle = '#a4a4a4';
+			roundRect(ctx, 0, 0, c.width(), c.height(), 5, true, false);
+			ctx.fillStyle = '#6c5f46';
+			roundRect(ctx, (c.width()*0.15), (c.height()*0.15), (c.width()*0.7), (c.width()*0.7), 5, true, false);
+			ctx.fillRect((c.width()*0.38), 0, (c.width()*0.24), (c.height()*0.2));
+			ctx.fillStyle = 'white';
+			ctx.font = "10pt Arial";
+			ctx.fontWeight = 'bold';
+			ctx.fillText('i', c.width()*0.45, c.height()*0.65);
+			return {done: true};
+		case 'outlet':
+			ctx.fillStyle = '#a4a4a4';
+			roundRect(ctx, 0, 0, c.width(), c.height(), 5, true, false);
+			ctx.fillStyle = '#00747f';
+			roundRect(ctx, (c.width()*0.15), (c.height()*0.15), (c.width()*0.7), (c.width()*0.7), 5, true, false);
+			ctx.fillRect((c.width()*0.38), c.height()*0.8, (c.width()*0.24), (c.height()*0.2));
+			ctx.fillStyle = 'white';
+			ctx.font = "10pt Arial";
+			ctx.fontWeight = 'bold';
+			ctx.fillText('o', c.width()*0.35, c.height()*0.65);
+			return {done: true};
+		case 'multislider':
+			ctx.strokeStyle = 'black';
+			ctx.lineWidth = 0.5;
+			ctx.strokeRect(0, 0, c.width(), c.height());
+			ctx.fillStyle = hexify(c.attrs['slidercolor']);
+			if (c.attrs['orientation'] == 0) {
+				ctx.fillRect(0, 0, 2, c.height());
+			} else {
+				ctx.fillRect(0, c.height()-2, c.width(), 2);
+			}
+			return {done: true};
+		case 'meter~':
+			ctx.strokeStyle = '#333333';
+			ctx.fillStyle = '#686868';
+			ctx.lineWidth = 2;
+			roundRect(ctx, 0, 0, c.width(), c.height(), 5, true, false);
+			roundRect(ctx, 0, 0, c.width(), c.height(), 5, false, true);
+			return {done: true};
+		case 'textedit':
+			ctx.strokeStyle = '#808080';
+			ctx.lineWidth = 2;
+			roundRect(ctx, 0, 0, coords[2], coords[3], 6);
+			return {done: true};
+		default:
+			return false;
+	}
+}
+
+var ellipse = function(x, y, r){
+	ctx.beginPath();
+	ctx.arc(x, y, r, 0, Math.PI * 2, true);
+	ctx.closePath();
+	ctx.fill();
+}
+
+
+/**
+From mizar and Paul Woolcock via StackOverflow
+* Divide an entire phrase in an array of phrases, all with the max pixel length given.
+* The words are initially separated by the space char.
+* @param phrase
+* @param length
+* @return
+*/
+function getLines(ctx,phrase,maxPxLength,textStyle) {
+    var wa=phrase.split(" "),
+        phraseArray=[],
+        lastPhrase="",
+        l=maxPxLength,
+        measure=0;
+    ctx.font = textStyle;
+    for (var i=0;i<wa.length;i++) {
+        var w=wa[i];
+        measure=ctx.measureText(lastPhrase+w).width;
+        if (measure<l) {
+            lastPhrase+=(" "+w);
+        }else {
+            phraseArray.push(lastPhrase);
+            lastPhrase=w;
+        }
+        if (i===wa.length-1) {
+            phraseArray.push(lastPhrase);
+            break;
+        }
+    }
+    return phraseArray;
+}
+
+function RGBtoHex(r, g, b) {
+var hex = (parseInt(r * 255) << 16) | (parseInt(g * 255) << 8) | parseInt(b * 255);
+return '#' + hex.toString(16);
+}
+
+function hexify(rgb) {
+	r = rgb[0]; g = rgb[1]; b = rgb[2];
+	var hex = (parseInt(r * 255) << 16) | (parseInt(g * 255) << 8) | parseInt(b * 255);
+	return '#' + hex.toString(16);
+}
